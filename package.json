@@ -1,0 +1,22 @@
+{
+  "name": "backend_database_p",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.17.3",
+    "nodemon": "^2.0.15",
+    "oracledb": "^5.3.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "cors": "^2.8.5"
+  }
+}
