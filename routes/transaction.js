@@ -19,7 +19,6 @@ router.get('/', async (req, res) => {
             // console.log(result.rows);
             res.send(result.rows);
         });
-})
-
+});
 
 module.exports = router;
