@@ -3,6 +3,7 @@ var router = express.Router()
 const oracledb = require('oracledb');
 
 const dbConfig = require('../config/dbconfig.js');
+const connection = require('../db/connection.js');
 
 
 router.get('/', async (req, res) => {
@@ -78,18 +79,44 @@ router.post('/associated', async (req, res) => {
         lastName: req.body.lastName,
         idCustomer: req.body.idCustomer
     }
-    
+
+    connection = await oracledb.getConnection(dbConfig);
+
+    const sql =
+    `
+        SELECT id FROM TPERSON WHERE id = ${associated.id}
+    `
+
+    let insertQuery = '';
+
+    await connection.execute(sql, function(err, result){
+        if(err){
+            console.error(err);
+                res.json({
+                    ok: false,
+                    message: 'No fue posible registrar al asociado!'
+            })
+            return;
+        }
+
+        if(result.rows.length == 0){
+            insertQuery = `INSERT INTO TPERSON VALUES(PERSON('${associated.firstName}' ,'${associated.lastName}','${associated.documentType}','${associated.id}'));`;
+        }
+    })
+
+    console.log(insertQuery);
+
     const block = 
     `
     BEGIN
-        INSERT INTO TPERSON VALUES(PERSON('${associated.firstName}' ,'${associated.lastName}','${associated.documentType}','${associated.id}'));
+        ${insertQuery}
         pr_create_associated('${associated.id}','${associated.idCustomer}','${associated.accountNumber}');
     COMMIT;
     END ;
     `
     console.log(block);
-    connection = await oracledb.getConnection(dbConfig);
-    connection.execute(block, function(err, result)
+    
+    await connection.execute(block, function(err, result)
         {
             if (err) {
                 console.error(err);
