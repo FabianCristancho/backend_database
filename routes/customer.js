@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
         INSERT INTO TADDRESS VALUES(ADDRESS(${idAddress},'${customer.address}','${customer.houseNumber}','${customer.neighboorhood}','${customer.description}'));
         INSERT INTO TPERSON VALUES(PERSON('${customer.firstName}' ,'${customer.lastName}','${customer.documentType}','${customer.id}'));
         pr_create_customer('${customer.id}',${idAddress},'${customer.nationality}');
-    COMMIT;
+        COMMIT;
     END;
     `;
 
@@ -78,7 +78,7 @@ router.post('/associated', async (req, res) => {
         lastName: req.body.lastName,
         idCustomer: req.body.idCustomer
     }
-
+    
     const block = 
     `
     BEGIN
@@ -87,6 +87,7 @@ router.post('/associated', async (req, res) => {
     COMMIT;
     END ;
     `
+    console.log(block);
     connection = await oracledb.getConnection(dbConfig);
     connection.execute(block, function(err, result)
         {

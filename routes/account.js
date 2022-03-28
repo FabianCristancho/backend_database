@@ -45,17 +45,16 @@ router.post('/', async (req, res) => {
         let arrayIndex = result.rows.map(acc => acc.ID);
         arrayIndex = arrayIndex.map(id => parseInt(id.substring(5,8)));
         arrayIndex.sort();
-
-        const lastIndex = arrayIndex[arrayIndex.length - 1] + 1;
+        let lastIndex=(arrayIndex.length==0)?1:arrayIndex[arrayIndex.length - 1] + 1;
 
         const block = 
         `
         BEGIN
             pr_create_account('${lastIndex}','${account.customerId}','${account.accountType}','${(account.coin)=="USD"? '01': '02'}',0,'${account.mode_of_use}','005');
-        COMMIT;
+            COMMIT;
         END;
         `
-
+        console.log(block);
         connection.execute(block, 
             function(err, result)
             {
@@ -92,6 +91,7 @@ router.post('/transfer', async (req, res) => {
         COMMIT;
         end;
     `
+    console.log(block);
     connection.execute(block,
     function(err, result) {
         if(err){
